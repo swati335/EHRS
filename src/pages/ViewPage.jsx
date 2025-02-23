@@ -75,22 +75,26 @@ const ViewPage = () => {
         </div>
       )}
 
-      {/* Modal for displaying user details */}
-     
       {isModalOpen && selectedUserData && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-700 bg-opacity-75">
-          <div className="relative bg-white p-6 rounded-lg w-1/2 max-w-lg shadow-lg flex">
-           <button
-              onClick={closeModal}
-              className="absolute top-3 right-3 text-gray-600 hover:text-gray-900 text-2xl font-bold transition"
-            >
-              &times;
-            </button>
-            {/*User Details */}
-            <div className="w-2/3 p-4">
-              <h3 className="text-2xl font-semibold mb-4 text-gray-800">User Details</h3>
-              <div className="space-y-2 text-gray-700">
-                <div className="border-b pb-2"><strong>Name:</strong> {selectedUserData.name}</div>
+  <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-700 bg-opacity-75">
+    <div className="relative bg-white rounded-lg w-1/3 max-w-md shadow-lg border border-gray-300">
+      
+      {/* Header */}
+      <div className="bg-slate-500 h-12 rounded-t-lg"></div>
+      
+      {/* Close Button */}
+      <button
+        onClick={closeModal}
+        className="absolute top-3 right-3 text-gray-600 hover:text-gray-900 text-2xl font-bold transition"
+      >
+        &times;
+      </button>
+      
+      {/* User Details */}
+      <div className="p-6 text-gray-800">
+        <h3 className="text-xl font-semibold text-center mb-4">User Details</h3>
+        <div className="space-y-2 text-sm">
+         <div className="border-b pb-2"><strong>Name:</strong> {selectedUserData.name}</div>
                 <div className="border-b pb-2"><strong>Age:</strong> {selectedUserData.age}</div>
                 <div className="border-b pb-2"><strong>Sex:</strong> {selectedUserData.sex}</div>
                 <div className="border-b pb-2"><strong>City:</strong> {selectedUserData.city}</div>
@@ -98,14 +102,14 @@ const ViewPage = () => {
                 <div className="border-b pb-2"><strong>Country:</strong> {selectedUserData.country}</div>
                 <div className="border-b pb-2"><strong>Symptoms:</strong> {selectedUserData.symptoms}</div>
                 <div className="border-b pb-2"><strong>Date of Admission:</strong> {selectedUserData.dateOfAdmission}</div>
-              </div>
-            </div>
-
-            
-            </div>
-          </div>
-        
-      )}
+        </div>
+      </div>
+      
+      {/* Footer */}
+      <div className="bg-slate-500 h-8 rounded-b-lg"></div>
+    </div>
+  </div>
+)}
     </Container>
   );
 };

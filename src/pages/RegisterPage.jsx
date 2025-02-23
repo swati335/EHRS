@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@nextui-org/react";
 import Container from "../components/Container";
+import {showNotification} from "./Notification"
 
 import { registerUser } from "../utils";
 import { useSmartContracts } from "../SmartContractProvider";
@@ -18,7 +19,8 @@ const RegisterPage = () => {
     console.log("Submitting with role:", role);
     try {
       await registerUser(role, smartContractContext);
-      alert("Successfully registered user");
+      //  alert("Successfully registered user");
+      // showNotification("Successfully registered user","success");
     } catch (error) {
       console.log(error);
       alert("Error registering user");

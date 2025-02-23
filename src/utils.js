@@ -1,5 +1,6 @@
 import { ethers } from "ethers";
 import { uploadJson, getJson } from "./ipfs";
+import { showNotification } from "./pages/Notification";
 
 // Enum for roles, matching the smart contract
 const Role = {
@@ -63,6 +64,45 @@ export const getKeyPair = (address) => {
   return keyPair ? JSON.parse(keyPair) : null;
 };
 
+// const showNotification = (message, type) => {
+//   const notification = document.createElement("div");
+//   notification.innerText = message;
+//   notification.style.position = "fixed";
+//   notification.style.top = "10px";
+//   notification.style.left = "10px";
+//   notification.style.padding = "10px";
+//   notification.style.borderRadius = "5px";
+//   notification.style.boxShadow = "0px 4px 6px rgba(0, 0, 0, 0.1)";
+//   notification.style.zIndex = "1000";
+
+//   // Set background color based on message type
+//   switch (type) {
+//     case "success":
+//       notification.style.background = "#4CAF50";
+//       notification.style.color = "white";
+//       break;
+//     case "error":
+//       notification.style.background = "#f44336";
+//       notification.style.color = "white";
+//       break;
+//     case "warning":
+//       notification.style.background = "#ff9800";
+//       notification.style.color = "white";
+//       break;
+//     case "info":
+//       notification.style.background = "#2196F3";
+//       notification.style.color = "white";
+//       break;
+//     default:
+//       notification.style.background = "#333";
+//       notification.style.color = "white";
+//   }
+//   document.body.appendChild(notification);
+//   setTimeout(() => {
+//     document.body.removeChild(notification);
+//   }, 3000);
+// };
+
 export const registerUser = async (role, smartContractContext) => {
   const { contracts, signer } = smartContractContext;
   const address = signer.address;
@@ -77,6 +117,7 @@ export const registerUser = async (role, smartContractContext) => {
 
     if (isRegistered) {
       console.log("User already registered");
+      showNotification("User already registered", "warning");
       return;
     }
 
@@ -88,8 +129,9 @@ export const registerUser = async (role, smartContractContext) => {
       JSON.stringify(publicKeyJwk)
     );
     await tx.wait();
-
+    showNotification("User registered successfully!", "success");
     console.log(`User registered successfully with role: ${role}`);
+    console.log(smartContractContext);
   } catch (error) {
     console.error("Error registering user:", error);
     throw error;
@@ -213,6 +255,8 @@ export const uploadData = async (userData, smartContractContext) => {
       encryptedSymmetricKey
     );
     await tx.wait();
+    // showNotification("Data uploaded successfully!", "success");
+    console.log("Data uploaded");
   } catch (error) {
     console.error("Error uploading data:", error);
     throw error;

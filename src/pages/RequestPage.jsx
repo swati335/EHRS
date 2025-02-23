@@ -2,6 +2,7 @@ import { useState, useRef } from "react";
 import { Button, Input, Spinner } from "@nextui-org/react";
 import Container from "../components/Container";
 import { useSmartContracts } from "../SmartContractProvider";
+import {showNotification} from "./Notification"
 
 const RequestPage = () => {
   const [loading, setLoading] = useState(false);
@@ -39,7 +40,8 @@ const RequestPage = () => {
         dataHash
       );
       await tx.wait();
-      alert("Request sent to the owner of the data.");
+      // alert("Request sent to the owner of the data.");
+      showNotification("Request sent to the owner of the data.","success");
     } catch (error) {
       console.error("Error requesting permission:", error);
     }
@@ -55,15 +57,15 @@ const RequestPage = () => {
 
   return (
     <Container>
-      <div className="p-8 w-1/3">
-        <h2 className="text-2xl mb-4">Request User Data</h2>
+      <div className="p-8 w-1/3 flex flex-col items-center">
+        <h2 className="text-2xl mb-4 ">Request User Data</h2>
         <Input
           placeholder="Enter Account ID"
           value={accountId}
           onChange={(e) => setAccountId(e.target.value)}
           className="mb-1 w-full p-2 "
         />
-        <Button onPress={handleSubmit} className="mt-4 " color="primary" size="sm">
+        <Button onPress={handleSubmit} className="mt-4 text-center" color="primary" size="sm">
           Request Data
         </Button>
 

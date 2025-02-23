@@ -12,7 +12,15 @@ contract PermissionContract {
         bool exists;
     }
 
+    struct DoctorUploadRequest {
+        address doctor;
+        address user;
+        string userData;
+        bool exists;
+    }
+
     mapping(address => PermissionRequest[]) public pendingRequests;
+    mapping(address => DoctorUploadRequest[]) public doctorUploadRequests;
 
     DataContract public dataContract;
     RegistryContract public registryContract;
@@ -33,6 +41,14 @@ contract PermissionContract {
         address indexed approver,
         string dataHash
     );
+
+    event DoctorUploadRequested(
+        address indexed doctor,
+        address indexed user,
+        string userData
+    );
+    event DoctorUploadApproved(address indexed user, address indexed doctor);
+    event DoctorUploadRejected(address indexed user, address indexed doctor);
 
     constructor(address dataContractAddress, address registryContractAddress) {
         dataContract = DataContract(dataContractAddress);
@@ -67,7 +83,7 @@ contract PermissionContract {
         view
         returns (PermissionRequest[] memory)
     {
-        return pendingRequests[msg.sender];
+        return (pendingRequests[msg.sender]);
     }
 
     function grantPermission(
@@ -134,5 +150,65 @@ contract PermissionContract {
         require(isRegistered, "Requester not registered.");
 
         return dataContract.metadataExists(dataHash, publicKey);
+    }
+
+    function requestDoctorUpload(address user, string memory userData) public {
+        doctorUploadRequests[user].push(
+            DoctorUploadRequest({
+                doctor: msg.sender,
+                user: user,
+                userData: userData,
+                exists: true
+            })
+        );
+        emit DoctorUploadRequested(msg.sender, user, userData);
+    }
+
+    function getDoctorUploadRequests()
+        external
+        view
+        returns (DoctorUploadRequest[] memory)
+    {
+        return doctorUploadRequests[msg.sender];
+    }
+
+    function approveDoctorUpload(uint index) public {
+        require(
+            index < doctorUploadRequests[msg.sender].length,
+            "Invalid request index."
+        );
+
+        DoctorUploadRequest memory request = doctorUploadRequests[msg.sender][
+            index
+        ];
+
+        _removeDoctorRequest(msg.sender, index);
+        emit DoctorUploadApproved(msg.sender, request.doctor);
+    }
+
+    function rejectDoctorUpload(uint index) public {
+        require(
+            index < doctorUploadRequests[msg.sender].length,
+            "Invalid request index."
+        );
+
+        DoctorUploadRequest memory request = doctorUploadRequests[msg.sender][
+            index
+        ];
+
+        _removeDoctorRequest(msg.sender, index);
+        emit DoctorUploadRejected(msg.sender, request.doctor);
+    }
+
+    function _removeDoctorRequest(address user, uint index) internal {
+        uint lastIndex = doctorUploadRequests[user].length - 1;
+
+        if (index != lastIndex) {
+            doctorUploadRequests[user][index] = doctorUploadRequests[user][
+                lastIndex
+            ];
+        }
+
+        doctorUploadRequests[user].pop();
     }
 }
