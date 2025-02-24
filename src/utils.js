@@ -165,13 +165,20 @@ const generateFileHash = async (data) => {
   return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
 };
 
-export const uploadData = async (userData, smartContractContext) => {
+export const uploadData = async (
+  userData,
+  smartContractContext,
+  userId = null
+) => {
   const { signer } = smartContractContext;
   const address = signer.address;
   const dataContract = smartContractContext.contracts.DataContract;
+  const registryContract = smartContractContext.contracts.RegistryContract;
 
   try {
-    const keyPair = getKeyPair(address);
+    const keyPair = getKeyPair(userId || address);
+    console.log(keyPair);
+
     if (!keyPair) {
       throw new Error("Key pair not found. Please register first.");
     }
@@ -208,6 +215,7 @@ export const uploadData = async (userData, smartContractContext) => {
     // Call the smart contract to store metadata
 
     const tx = await dataContract.addData(
+      userId || address,
       address,
       JSON.stringify(publicKeyJwk),
       dataHash,
@@ -374,6 +382,5 @@ export async function getSymmetricKey(userAddress, encryptedSymmetricKey) {
     return null;
   }
 
-  // Assume `decryptSymmetricKey` is implemented elsewhere
   return await decryptSymmetricKey(encryptedSymmetricKey, keyPair.privateKey);
 }

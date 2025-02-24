@@ -46,12 +46,13 @@ contract DataContract {
 
     function addData(
         address userAddress,
+        address signerAddress,
         string memory publicKey,
         string memory dataHash,
         string memory dataType,
         string memory storedDataCID,
         string memory encryptedSymmetricKey
-    ) external onlyUserOrCareProvider(userAddress) {
+    ) external onlyUserOrCareProvider(signerAddress) {
         Metadata memory metadata = Metadata({
             publicKey: publicKey,
             dataHash: dataHash,
